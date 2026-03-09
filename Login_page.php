@@ -71,8 +71,11 @@ $error = '';
 <body>
     <div class="wrapper">
         <div class="logo">
-            <!-- replace src with your actual logo file -->
-            <img src="omega_logo.png" alt="Omega Healthcare">
+            <img src="/image/omegalogo.png" alt="Omega Healthcare">
+        </div>
+
+        <div class="title">
+            <h1>OMH Cebu IT Timetracker</h1>
         </div>
         <div class="login-box">
             <h2>Log In</h2>

@@ -266,7 +266,7 @@ if (isset($_POST['add_user'])) {
                         <option value="">Select</option>
                         <option value="Cebu">Cebu</option>
                         <option value="Manila">Manila</option>
-                        <option value="Davao">Davao</option>
+
                     </select>
                 </div>
                 <div class="form-group">

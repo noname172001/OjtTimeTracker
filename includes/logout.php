@@ -1,5 +1,5 @@
 <?php
-include '../includes/sessions.php';
 
+include 'sessions.php';
 
 logout();

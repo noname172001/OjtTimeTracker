@@ -7,6 +7,6 @@ This PHP-based project is designed with a simple, minimalist architecture. It se
 
 ## 🏗️ Project Structure
 
-📂 OJT-Timetracker
-├── 📂 includes/   # Core PHP logic and backend processing <br>
+📂 OJT-Timetracker  
+├── 📂 includes/   # Core PHP logic and backend processing  
 └── 📂 views/      # Front-end templates and page layouts

@@ -4,6 +4,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
+require_once 'db_config.php';
+
 // Check if admin is logged in
 // if (!isset($_SESSION['admin_logged_in'])) {
 //     header('Location: login_page.php');
@@ -12,35 +14,41 @@ session_start();
 
 $admin_name = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
 
-// Sample data - replace with database queries
-$interns = [
-    ['id' => 1, 'name' => 'Jean Claudette Pena', 'hours' => 378],
-    ['id' => 2, 'name' => 'Aubrey Lariosa', 'hours' => 378],
-    ['id' => 3, 'name' => 'Vera Angeli Salas', 'hours' => 378],
-    ['id' => 4, 'name' => 'Lysa Panogalinog', 'hours' => 378],
-    ['id' => 5, 'name' => 'Flora Mae Tutor', 'hours' => 378],
-    ['id' => 7, 'name' => 'Thessa Ann Matus', 'hours' => 378],
-];
-
-$total_interns = count($interns);
-
-// Handle search
-$search_query = '';
-if (isset($_GET['search'])) {
-    $search_query = $_GET['search'];
-    // Filter interns based on search
-    $interns = array_filter($interns, function($intern) use ($search_query) {
-        return stripos($intern['name'], $search_query) !== false || 
-               stripos($intern['id'], $search_query) !== false;
-    });
-}
-
 // Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
     header('Location: login_page.php');
     exit;
 }
+
+// Handle search
+$search_query = '';
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Fetch interns from database
+$conn = getDBConnection();
+
+if (!empty($search_query)) {
+    $stmt = $conn->prepare("
+        SELECT user_id AS id, user_name AS name, user_total_hours_required AS hours 
+        FROM users 
+        WHERE user_name LIKE :search OR user_id LIKE :search2
+    ");
+    $stmt->execute([
+        'search'  => '%' . $search_query . '%',
+        'search2' => '%' . $search_query . '%',
+    ]);
+} else {
+    $stmt = $conn->query("
+        SELECT user_id AS id, user_name AS name, user_total_hours_required AS hours 
+        FROM users
+    ");
+}
+
+$interns = $stmt->fetchAll();
+$total_interns = count($interns);
+
+closeDBConnection($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -218,6 +226,13 @@ if (isset($_GET['logout'])) {
             font-weight: bold;
             color: #333;
         }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -263,18 +278,26 @@ if (isset($_GET['logout'])) {
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($interns as $intern): ?>
-            <tr>
-                <td><?php echo $intern['id']; ?></td>
-                <td><?php echo htmlspecialchars($intern['name']); ?></td>
-                <td><?php echo $intern['hours']; ?> hrs</td>
-                <td>
-                    <a href="delete_confirmation.php?id=<?php echo $intern['id']; ?>&name=<?php echo urlencode($intern['name']); ?>">
-                        <img src="/image/delete_icon.png" alt="Delete" class="delete-icon">
-                    </a>
-                </td>
-            </tr>
-            <?php endforeach; ?>
+            <?php if (!empty($interns)): ?>
+                <?php foreach ($interns as $intern): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($intern['id']); ?></td>
+                    <td><?php echo htmlspecialchars($intern['name']); ?></td>
+                    <td><?php echo htmlspecialchars($intern['hours']); ?> hrs</td>
+                    <td>
+                        <a href="delete_confirmation.php?id=<?php echo $intern['id']; ?>&name=<?php echo urlencode($intern['name']); ?>">
+                            <img src="/image/delete_icon.png" alt="Delete" class="delete-icon">
+                        </a>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="4" class="no-results">
+                        <?php echo !empty($search_query) ? 'No interns found matching "' . htmlspecialchars($search_query) . '"' : 'No interns found.'; ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
         </tbody>
     </table>
     
@@ -284,7 +307,6 @@ if (isset($_GET['logout'])) {
     </div>
     
     <script>
-        // Update date and time
         function updateDateTime() {
             const now = new Date();
             const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -294,8 +316,8 @@ if (isset($_GET['logout'])) {
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             
-            const formatted = `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
-            document.getElementById('datetime').textContent = formatted;
+            document.getElementById('datetime').textContent = 
+                `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
         }
         
         updateDateTime();

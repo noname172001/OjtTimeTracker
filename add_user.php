@@ -4,32 +4,72 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-// Check if admin is logged in
-// if (!isset($_SESSION['admin_logged_in'])) {
-//     header('Location: login_page.php');
-//     exit;
-// }
 
 $admin_name = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
 
+
+$db_host = 'localhost';
+$db_name = 'OjtTimeTracker_db';
+$db_user = 'root';
+$db_pass = '1234';           
+
+
+$success_message = '';
+$error_message   = '';
+
 // Handle form submission
 if (isset($_POST['add_user'])) {
-    $location = $_POST['location'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $name = $_POST['name'];
-    $school = $_POST['school'];
-    $total_hours = $_POST['total_hours'];
-    
-    // Add your database insert logic here
-    // Example:
-    // $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    // INSERT INTO interns (location, email, password, name, school, total_hours) 
-    // VALUES (?, ?, ?, ?, ?, ?)
-    
-    // After successful insert, redirect back to dashboard
-    header('Location: admin_dashboard.php');
-    exit;
+    $location    = trim($_POST['location']);
+    $email       = trim($_POST['email']);
+    $password    = $_POST['password'];
+    $name        = trim($_POST['name']);
+    $school      = trim($_POST['school']);
+    $total_hours = intval($_POST['total_hours']);
+
+    // Basic validation
+    if (empty($location) || empty($email) || empty($password) || empty($name) || empty($school) || $total_hours <= 0) {
+        $error_message = 'All fields are required and total hours must be greater than 0.';
+    } else {
+        // Connect to MySQL
+        $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+        if ($conn->connect_error) {
+            $error_message = 'Database connection failed: ' . $conn->connect_error;
+        } else {
+            // Check if email already exists
+            $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE user_email = ?");
+            $check_stmt->bind_param('s', $email);
+            $check_stmt->execute();
+            $check_stmt->store_result();
+
+            if ($check_stmt->num_rows > 0) {
+                $error_message = 'A user with that email already exists.';
+            } else {
+                // Hash the password before storing
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+                $stmt = $conn->prepare(
+                    "INSERT INTO users 
+                        (user_name, user_email, user_password, user_location, user_school, user_total_hours_required)
+                     VALUES (?, ?, ?, ?, ?, ?)"
+                );
+                $stmt->bind_param('sssssi', $name, $email, $hashed_password, $location, $school, $total_hours);
+
+                if ($stmt->execute()) {
+                    // Redirect on success
+                    header('Location: admin_dashboard.php');
+                    exit;
+                } else {
+                    $error_message = 'Failed to add user: ' . $stmt->error;
+                }
+
+                $stmt->close();
+            }
+
+            $check_stmt->close();
+            $conn->close();
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -172,8 +212,29 @@ if (isset($_POST['add_user'])) {
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             margin-top: 15px;
+        }
+
+        .alert {
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .alert-error {
+            background: #ffe0e0;
+            border: 1px solid #ff4444;
+            color: #cc0000;
+        }
+
+        .alert-success {
+            background: #e0ffe0;
+            border: 1px solid #00cc00;
+            color: #006600;
         }
         
         .form-group {
@@ -259,19 +320,27 @@ if (isset($_POST['add_user'])) {
         <div class="modal-content">
             <a href="admin_dashboard.php" class="back-arrow">←</a>
             <div class="modal-title">ADD USER</div>
+
+            <?php if (!empty($error_message)): ?>
+                <div class="alert alert-error"><?php echo htmlspecialchars($error_message); ?></div>
+            <?php endif; ?>
+
+            <?php if (!empty($success_message)): ?>
+                <div class="alert alert-success"><?php echo htmlspecialchars($success_message); ?></div>
+            <?php endif; ?>
+
             <form method="POST">
                 <div class="form-group">
                     <label>Location:</label>
                     <select name="location" required>
                         <option value="">Select</option>
-                        <option value="Cebu">Cebu</option>
-                        <option value="Manila">Manila</option>
-
+                        <option value="Cebu"   <?php echo (isset($_POST['location']) && $_POST['location'] === 'Cebu')   ? 'selected' : ''; ?>>Cebu</option>
+                        <option value="Manila" <?php echo (isset($_POST['location']) && $_POST['location'] === 'Manila') ? 'selected' : ''; ?>>Manila</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Email:</label>
-                    <input type="email" name="email" required>
+                    <input type="email" name="email" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Password:</label>
@@ -279,15 +348,15 @@ if (isset($_POST['add_user'])) {
                 </div>
                 <div class="form-group">
                     <label>Name:</label>
-                    <input type="text" name="name" required>
+                    <input type="text" name="name" value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>" required>
                 </div>
                 <div class="form-group">
                     <label>School:</label>
-                    <input type="text" name="school" required>
+                    <input type="text" name="school" value="<?php echo isset($_POST['school']) ? htmlspecialchars($_POST['school']) : ''; ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Total hours required:</label>
-                    <input type="number" name="total_hours" required>
+                    <input type="number" name="total_hours" value="<?php echo isset($_POST['total_hours']) ? htmlspecialchars($_POST['total_hours']) : ''; ?>" min="1" required>
                 </div>
                 <button type="submit" name="add_user" class="add-btn">ADD</button>
             </form>
@@ -295,20 +364,17 @@ if (isset($_POST['add_user'])) {
     </div>
     
     <script>
-        // Update date and time
         function updateDateTime() {
             const now = new Date();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
+            const month   = String(now.getMonth() + 1).padStart(2, '0');
+            const day     = String(now.getDate()).padStart(2, '0');
+            const year    = now.getFullYear();
+            const hours   = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
-            
-            const formatted = `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
-            document.getElementById('datetime').textContent = formatted;
+            document.getElementById('datetime').textContent =
+                `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
         }
-        
         updateDateTime();
         setInterval(updateDateTime, 1000);
     </script>

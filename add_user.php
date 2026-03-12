@@ -1,4 +1,5 @@
 <?php
+//add_user.php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -22,53 +23,51 @@ if (isset($_POST['add_user'])) {
     $location    = trim($_POST['location']);
     $email       = trim($_POST['email']);
     $password    = $_POST['password'];
-    $name        = trim($_POST['name']);
+    $first_name  = trim($_POST['first_name']);
+    $middle_name = trim($_POST['middle_name']);
+    $last_name   = trim($_POST['last_name']);
     $school      = trim($_POST['school']);
+    $address     = trim($_POST['address']);
+    $mobile_no   = trim($_POST['mobile_no']);
     $total_hours = intval($_POST['total_hours']);
 
-    // Basic validation
-    if (empty($location) || empty($email) || empty($password) || empty($name) || empty($school) || $total_hours <= 0) {
-        $error_message = 'All fields are required and total hours must be greater than 0.';
+    if (empty($location) || empty($email) || empty($password) || empty($first_name) || empty($last_name) || empty($school) || $total_hours <= 0) {
+        $error_message = 'All required fields must be filled and total hours must be greater than 0.';
     } else {
-        // Connect to MySQL
-        $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+        require_once 'db_config.php';
+        $conn = getDBConnection();
 
-        if ($conn->connect_error) {
-            $error_message = 'Database connection failed: ' . $conn->connect_error;
+        // Check if email already exists in login table
+        $check = $conn->prepare("SELECT login_id FROM login WHERE email = ?");
+        $check->execute([$email]);
+
+        if ($check->fetch()) {
+            $error_message = 'A user with that email already exists.';
         } else {
-            // Check if email already exists
-            $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE user_email = ?");
-            $check_stmt->bind_param('s', $email);
-            $check_stmt->execute();
-            $check_stmt->store_result();
+            // Insert into users table first
+            $stmt = $conn->prepare("
+                INSERT INTO users 
+                    (first_name, middle_name, last_name, school, total_no_of_hrs_required, location, address, mobile_no)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([$first_name, $middle_name, $last_name, $school, $total_hours, $location, $address, $mobile_no]);
 
-            if ($check_stmt->num_rows > 0) {
-                $error_message = 'A user with that email already exists.';
-            } else {
-                // Hash the password before storing
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $new_user_id = $conn->lastInsertId();
 
-                $stmt = $conn->prepare(
-                    "INSERT INTO users 
-                        (user_name, user_email, user_password, user_location, user_school, user_total_hours_required)
-                     VALUES (?, ?, ?, ?, ?, ?)"
-                );
-                $stmt->bind_param('sssssi', $name, $email, $hashed_password, $location, $school, $total_hours);
+            // Insert into login table
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $login_stmt = $conn->prepare("
+                INSERT INTO login (user_id, email, password, role)
+                VALUES (?, ?, ?, 'intern')
+            ");
+            $login_stmt->execute([$new_user_id, $email, $hashed_password]);
 
-                if ($stmt->execute()) {
-                    // Redirect on success
-                    header('Location: admin_dashboard.php');
-                    exit;
-                } else {
-                    $error_message = 'Failed to add user: ' . $stmt->error;
-                }
-
-                $stmt->close();
-            }
-
-            $check_stmt->close();
-            $conn->close();
+            closeDBConnection($conn);
+            header('Location: admin_dashboard.php');
+            exit;
         }
+
+        closeDBConnection($conn);
     }
 }
 ?>
@@ -329,37 +328,53 @@ if (isset($_POST['add_user'])) {
                 <div class="alert alert-success"><?php echo htmlspecialchars($success_message); ?></div>
             <?php endif; ?>
 
-            <form method="POST">
-                <div class="form-group">
-                    <label>Location:</label>
-                    <select name="location" required>
-                        <option value="">Select</option>
-                        <option value="Cebu"   <?php echo (isset($_POST['location']) && $_POST['location'] === 'Cebu')   ? 'selected' : ''; ?>>Cebu</option>
-                        <option value="Manila" <?php echo (isset($_POST['location']) && $_POST['location'] === 'Manila') ? 'selected' : ''; ?>>Manila</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" name="email" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label>Password:</label>
-                    <input type="password" name="password" required>
-                </div>
-                <div class="form-group">
-                    <label>Name:</label>
-                    <input type="text" name="name" value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label>School:</label>
-                    <input type="text" name="school" value="<?php echo isset($_POST['school']) ? htmlspecialchars($_POST['school']) : ''; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label>Total hours required:</label>
-                    <input type="number" name="total_hours" value="<?php echo isset($_POST['total_hours']) ? htmlspecialchars($_POST['total_hours']) : ''; ?>" min="1" required>
-                </div>
-                <button type="submit" name="add_user" class="add-btn">ADD</button>
-            </form>
+<form method="POST">
+    <div class="form-group">
+        <label>Location:</label>
+        <select name="location" required>
+            <option value="">Select</option>
+            <option value="Cebu"   <?php echo (isset($_POST['location']) && $_POST['location'] === 'Cebu')   ? 'selected' : ''; ?>>Cebu</option>
+            <option value="Manila" <?php echo (isset($_POST['location']) && $_POST['location'] === 'Manila') ? 'selected' : ''; ?>>Manila</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Email:</label>
+        <input type="email" name="email" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
+    </div>
+    <div class="form-group">
+        <label>Password:</label>
+        <input type="password" name="password" required>
+    </div>
+    <div class="form-group">
+        <label>First Name:</label>
+        <input type="text" name="first_name" value="<?php echo isset($_POST['first_name']) ? htmlspecialchars($_POST['first_name']) : ''; ?>" required>
+    </div>
+    <div class="form-group">
+        <label>Middle Name:</label>
+        <input type="text" name="middle_name" value="<?php echo isset($_POST['middle_name']) ? htmlspecialchars($_POST['middle_name']) : ''; ?>">
+    </div>
+    <div class="form-group">
+        <label>Last Name:</label>
+        <input type="text" name="last_name" value="<?php echo isset($_POST['last_name']) ? htmlspecialchars($_POST['last_name']) : ''; ?>" required>
+    </div>
+    <div class="form-group">
+        <label>School:</label>
+        <input type="text" name="school" value="<?php echo isset($_POST['school']) ? htmlspecialchars($_POST['school']) : ''; ?>" required>
+    </div>
+    <div class="form-group">
+        <label>Address:</label>
+        <input type="text" name="address" value="<?php echo isset($_POST['address']) ? htmlspecialchars($_POST['address']) : ''; ?>">
+    </div>
+    <div class="form-group">
+        <label>Mobile No:</label>
+        <input type="text" name="mobile_no" value="<?php echo isset($_POST['mobile_no']) ? htmlspecialchars($_POST['mobile_no']) : ''; ?>">
+    </div>
+    <div class="form-group">
+        <label>Total hours required:</label>
+        <input type="number" name="total_hours" value="<?php echo isset($_POST['total_hours']) ? htmlspecialchars($_POST['total_hours']) : ''; ?>" min="1" required>
+    </div>
+    <button type="submit" name="add_user" class="add-btn">ADD</button>
+</form>
         </div>
     </div>
     

@@ -1,4 +1,5 @@
 <?php
+// login_page.php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -8,59 +9,58 @@ require_once 'db_config.php';
 
 $error = '';
 
-//Login_page
-
 // Handle login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email']);
+    $email    = trim($_POST['email']);
     $password = trim($_POST['password']);
-    
+
     if (!empty($email) && !empty($password)) {
         $conn = getDBConnection();
-        
-        // Check if it's an admin login
-        $stmt = $conn->prepare("SELECT admin_id, admin_email FROM admin WHERE admin_email = ? AND admin_password = ?");
-        $stmt->execute([$email, $password]);
-        $admin = $stmt->fetch();
-        
-        if ($admin) {
-            // Admin login successful
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['admin_id'] = $admin['admin_id'];
-            $_SESSION['admin_name'] = 'Admin';
-            $_SESSION['user_type'] = 'admin';
-            
-            closeDBConnection($conn);
-            header('Location: admin_dashboard.php');
-            exit;
+
+        // Join login + users tables to get all needed info
+        $stmt = $conn->prepare("
+            SELECT l.login_id, l.user_id, l.role, l.password,
+                   u.first_name, u.last_name
+            FROM login l
+            JOIN users u ON l.user_id = u.user_id
+            WHERE l.email = ?
+        ");
+        $stmt->execute([$email]);
+        $account = $stmt->fetch();
+
+        if ($account && (password_verify($password, $account['password']) || $account['password'] === $password)) {
+            if ($account['role'] === 'admin') {
+                // Admin login
+                $_SESSION['admin_logged_in'] = true;
+                $_SESSION['user_id']         = $account['user_id'];
+                $_SESSION['admin_name']      = $account['first_name'] . ' ' . $account['last_name'];
+                $_SESSION['user_type']       = 'admin';
+
+                closeDBConnection($conn);
+                header('Location: admin_dashboard.php');
+                exit;
+
+            } elseif ($account['role'] === 'intern') {
+                // Intern login
+                $_SESSION['user_logged_in'] = true;
+                $_SESSION['user_id']        = $account['user_id'];
+                $_SESSION['user_name']      = $account['first_name'] . ' ' . $account['last_name'];
+                $_SESSION['user_type']      = 'intern';
+
+                closeDBConnection($conn);
+                header('Location: user_dashboard.php');
+                exit;
+            }
         }
-        
-        // Check if it's a user login
-        $stmt = $conn->prepare("SELECT user_id, user_name, user_email FROM users WHERE user_email = ? AND user_password = ?");
-        $stmt->execute([$email, $password]);
-        $user = $stmt->fetch();
-        
-        if ($user) {
-            // User login successful
-            $_SESSION['user_logged_in'] = true;
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['user_name'] = $user['user_name'];
-            $_SESSION['user_email'] = $user['user_email'];
-            $_SESSION['user_type'] = 'user';
-            
-            closeDBConnection($conn);
-            header('Location: user_dashboard.php');
-            exit;
-        }
-        
+
         // Login failed
         $error = 'Invalid email or password';
         closeDBConnection($conn);
+
     } else {
         $error = 'Please enter both email and password';
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

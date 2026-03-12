@@ -1,16 +1,11 @@
 <?php
+//admin_dashboard.php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
 require_once 'db_config.php';
-
-// Check if admin is logged in
-// if (!isset($_SESSION['admin_logged_in'])) {
-//     header('Location: login_page.php');
-//     exit;
-// }
 
 $admin_name = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
 
@@ -30,9 +25,16 @@ $conn = getDBConnection();
 
 if (!empty($search_query)) {
     $stmt = $conn->prepare("
-        SELECT user_id AS id, user_name AS name, user_total_hours_required AS hours 
-        FROM users 
-        WHERE user_name LIKE :search OR user_id LIKE :search2
+        SELECT u.user_id AS id, 
+               CONCAT(u.first_name, ' ', IFNULL(u.middle_name, ''), ' ', u.last_name) AS name,
+               u.total_no_of_hrs_required AS hours
+        FROM users u
+        JOIN login l ON u.user_id = l.user_id
+        WHERE l.role = 'intern'
+        AND (
+            CONCAT(u.first_name, ' ', u.last_name) LIKE :search 
+            OR u.user_id LIKE :search2
+        )
     ");
     $stmt->execute([
         'search'  => '%' . $search_query . '%',
@@ -40,8 +42,12 @@ if (!empty($search_query)) {
     ]);
 } else {
     $stmt = $conn->query("
-        SELECT user_id AS id, user_name AS name, user_total_hours_required AS hours 
-        FROM users
+        SELECT u.user_id AS id, 
+               CONCAT(u.first_name, ' ', IFNULL(u.middle_name, ''), ' ', u.last_name) AS name,
+               u.total_no_of_hrs_required AS hours
+        FROM users u
+        JOIN login l ON u.user_id = l.user_id
+        WHERE l.role = 'intern'
     ");
 }
 

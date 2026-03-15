@@ -302,7 +302,7 @@
 <body>
 
     <aside>
-        <div class="admin-badge">Admin Access</div>
+        <div class="admin-badge">ADMINISTRATION PANEL</div>
         <div class="profile-container">
             <img src="https://ui-avatars.com/api/?name=Admin+User&background=1e293b&color=fff" class="profile-img">
             <div style="font-weight: 700; font-size: 1.1rem;">Aldin Moreno</div>
@@ -316,7 +316,7 @@
             <a href="#" class="nav-link">Project Assignments</a>
 
             <div class="nav-label">Compliance</div>
-            <a href="#" class="nav-link">Remote Audit Logs</a>
+            <!-- <a href="#" class="nav-link">Remote Audit Logs</a> -->
             <a href="#" class="nav-link">Weekly Reports</a>
 
             <div class="nav-label">System</div>
@@ -339,8 +339,8 @@
 
         <main>
             <div class="section-header">
-                <h2 style="margin: 0;">Intern Fleet Overview</h2>
-                <button class="btn-primary">+ Add New Intern</button>
+                <h2 style="margin: 0;">Intern Dashboard</h2>
+                <!-- <button class="btn-primary">+ Add New Intern</button> -->
             </div>
 
             <div class="admin-grid">

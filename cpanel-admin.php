@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,19 +27,19 @@
             color: var(--text-main);
         }
 
-        /* --- Left Sidebar (Admin Branding) --- */
+        /* --- Left Sidebar --- */
         aside {
             width: 280px;
             background: var(--sidebar-bg);
             border-right: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
-            align-items: center;
             padding-top: 30px;
             z-index: 10;
         }
 
         .admin-badge {
+            align-self: center;
             background: #e0f4ff;
             color: var(--accent);
             padding: 5px 15px;
@@ -68,6 +69,8 @@
             width: 100%;
             padding: 0 20px;
             box-sizing: border-box;
+            flex-grow: 1;
+            /* Pushes the bottom nav down */
         }
 
         .nav-label {
@@ -91,7 +94,8 @@
             transition: all 0.2s ease;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             background-color: #f0f9ff;
             color: var(--accent);
         }
@@ -100,6 +104,17 @@
             background-color: var(--accent);
             color: white;
             box-shadow: 0 4px 12px rgba(66, 191, 245, 0.3);
+        }
+
+        .nav-link.logout {
+            color: var(--danger);
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-link.logout:hover {
+            background-color: #fff1f2;
+            color: var(--danger);
         }
 
         /* --- Main Content --- */
@@ -136,10 +151,34 @@
             gap: 20px;
         }
 
-        /* --- Admin Dashboard Content --- */
+        /* --- Dashboard Content --- */
         main {
             padding: 35px 40px;
             overflow-y: auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(66, 191, 245, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(66, 191, 245, 0.4);
         }
 
         .admin-grid {
@@ -153,17 +192,26 @@
             background: white;
             padding: 20px;
             border-radius: 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
 
-        .metric-card h4 { margin: 0; color: var(--text-muted); font-size: 0.8rem; }
-        .metric-card p { margin: 8px 0 0; font-size: 1.5rem; font-weight: 700; }
+        .metric-card h4 {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .metric-card p {
+            margin: 8px 0 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
 
         .data-panel {
             background: white;
             border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
         }
 
         .panel-header {
@@ -233,8 +281,24 @@
             border-color: var(--accent);
             color: var(--accent);
         }
+
+        .btn-outline-danger {
+            border: 1px solid #fee2e2;
+            color: var(--danger);
+            background: transparent;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-outline-danger:hover {
+            background: #fff1f2;
+        }
     </style>
 </head>
+
 <body>
 
     <aside>
@@ -250,14 +314,17 @@
             <a href="#" class="nav-link active">Intern Directory</a>
             <a href="#" class="nav-link">Attendance Review</a>
             <a href="#" class="nav-link">Project Assignments</a>
-            
+
             <div class="nav-label">Compliance</div>
             <a href="#" class="nav-link">Remote Audit Logs</a>
             <a href="#" class="nav-link">Weekly Reports</a>
-            
+
             <div class="nav-label">System</div>
             <a href="#" class="nav-link">Documentation Hub</a>
             <a href="#" class="nav-link">Settings</a>
+
+            <div class="nav-label" style="margin-top: auto;">Account</div>
+            <a href="#" class="nav-link logout">Sign Out</a>
         </nav>
     </aside>
 
@@ -266,12 +333,15 @@
             <input type="text" class="search-bar" placeholder="Search interns or logs...">
             <div class="header-actions">
                 <span style="font-size: 0.85rem; color: var(--text-muted);">March 13, 2026</span>
-                <button class="btn-action" style="background: var(--accent); color: white; border: none; padding: 8px 20px;">+ Add New Intern</button>
+                <button class="btn-outline-danger">Logout</button>
             </div>
         </header>
 
         <main>
-            <h2 style="margin-top: 0; margin-bottom: 30px;">Intern Fleet Overview</h2>
+            <div class="section-header">
+                <h2 style="margin: 0;">Intern Fleet Overview</h2>
+                <button class="btn-primary">+ Add New Intern</button>
+            </div>
 
             <div class="admin-grid">
                 <div class="metric-card">
@@ -322,7 +392,9 @@
                             <td>1Nito Tower</td>
                             <td>120 / 480 hrs</td>
                             <td>
-                                <div class="progress-bar-bg"><div class="progress-fill" style="width: 25%;"></div></div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-fill" style="width: 25%;"></div>
+                                </div>
                             </td>
                             <td>
                                 <button class="btn-action">View Logs</button>
@@ -342,7 +414,9 @@
                             <td>Avenir Office</td>
                             <td>460 / 480 hrs</td>
                             <td>
-                                <div class="progress-bar-bg"><div class="progress-fill" style="width: 95%;"></div></div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-fill" style="width: 95%;"></div>
+                                </div>
                             </td>
                             <td>
                                 <button class="btn-action">View Logs</button>
@@ -356,4 +430,5 @@
     </div>
 
 </body>
+
 </html>

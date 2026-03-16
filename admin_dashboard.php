@@ -44,7 +44,7 @@ if (!empty($search_query)) {
     $stmt = $conn->query("
         SELECT u.user_id AS id, 
                CONCAT(u.first_name, ' ', IFNULL(u.middle_name, ''), ' ', u.last_name) AS name,
-               u.total_no_of_hrs_required AS hours
+               u.total_no_of_hrs_required AS hours, u.location
         FROM users u
         JOIN login l ON u.user_id = l.user_id
         WHERE l.role = 'intern'
@@ -61,184 +61,9 @@ closeDBConnection($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/admin_dashboard.css">
     <title>Admin Dashboard - OMH Cebu IT Timetracker</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: #aaa;
-            padding: 20px;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        
-        .logo img {
-            width: 180px;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .user-text {
-            text-align: right;
-        }
-        
-        .user-text p {
-            margin-bottom: 5px;
-            font-size: 14px;
-            color: #333;
-        }
-        
-        .logout-btn {
-            padding: 6px 18px;
-            background: #00ff00;
-            border: 1px solid #000;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            border-radius: 3px;
-        }
-        
-        .logout-btn:hover {
-            background: #00dd00;
-        }
-        
-        .profile-icon {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #333;
-        }
-        
-        .profile-icon img {
-            width: 40px;
-            height: 40px;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .date-time {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .search-add {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .search-box {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .search-box label {
-            font-size: 16px;
-            color: #333;
-        }
-        
-        .search-box input {
-            padding: 6px 10px;
-            border: 1px solid #333;
-            font-size: 14px;
-            width: 200px;
-        }
-        
-        .search-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 5px;
-        }
-        
-        .add-user-btn {
-            padding: 8px 20px;
-            background: #00ff00;
-            border: 1px solid #000;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 3px;
-            text-decoration: none;
-            color: #000;
-            display: inline-block;
-        }
-        
-        .add-user-btn:hover {
-            background: #00dd00;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            margin-bottom: 15px;
-        }
-        
-        th {
-            background: #00ff00;
-            padding: 12px;
-            text-align: center;
-            font-size: 18px;
-            border: 1px solid #333;
-            font-weight: bold;
-        }
-        
-        td {
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #333;
-            font-size: 16px;
-        }
-        
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-        
-        .delete-icon {
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-        }
-        
-        .total-count {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-style: italic;
-        }
     </style>
 </head>
 <body>
@@ -280,6 +105,7 @@ closeDBConnection($conn);
                 <th>INTERN ID #</th>
                 <th>Name</th>
                 <th>Total # of hours</th>
+                <th>Location</th>
                 <th>Delete</th>
             </tr>
         </thead>
@@ -290,6 +116,7 @@ closeDBConnection($conn);
                     <td><?php echo htmlspecialchars($intern['id']); ?></td>
                     <td><?php echo htmlspecialchars($intern['name']); ?></td>
                     <td><?php echo htmlspecialchars($intern['hours']); ?> hrs</td>
+                    <td><?php echo html_entity_decode($intern['location']); ?></td>
                     <td>
                         <a href="delete_confirmation.php?id=<?php echo $intern['id']; ?>&name=<?php echo urlencode($intern['name']); ?>">
                             <img src="/image/delete_icon.png" alt="Delete" class="delete-icon">
@@ -299,7 +126,7 @@ closeDBConnection($conn);
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="4" class="no-results">
+                    <td colspan="5" class="no-results">
                         <?php echo !empty($search_query) ? 'No interns found matching "' . htmlspecialchars($search_query) . '"' : 'No interns found.'; ?>
                     </td>
                 </tr>
@@ -312,22 +139,6 @@ closeDBConnection($conn);
         Total # of Interns : <?php echo $total_interns; ?> Interns
     </div>
     
-    <script>
-        function updateDateTime() {
-            const now = new Date();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            
-            document.getElementById('datetime').textContent = 
-                `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
-        }
-        
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-    </script>
+    <script src="/js/admin_dashboard.js"></script>
 </body>
 </html>

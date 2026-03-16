@@ -1,0 +1,214 @@
+ * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #b0b0b0;
+            padding: 20px 30px;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .logo img { width: 160px; }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .user-text { text-align: right; }
+        .user-text p { font-size: 13px; color: #222; margin-bottom: 5px; }
+        .logout-form { display: inline; }
+        .logout-btn {
+            padding: 5px 16px;
+            background: #0095ff;
+            border: 1px solid #000;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .logout-btn:hover { background: #00dd00; }
+        .profile-icon {
+            width: 56px; height: 56px;
+            background: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid #333;
+            overflow: hidden;
+        }
+        .profile-icon img { width: 36px; height: 36px; }
+
+        /* ── CONTROLS BAR ── */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .date-time { font-size: 17px; font-weight: bold; color: #222; }
+
+        .controls-right { display: flex; gap: 10px; align-items: center; }
+
+        .month-select-form { display: flex; gap: 0; }
+        .month-select {
+            padding: 6px 10px;
+            font-size: 13px;
+            border: 1px solid #555;
+            border-right: none;
+            background: #e8e8e8;
+            cursor: pointer;
+            border-radius: 3px 0 0 3px;
+        }
+        .month-select-btn {
+            padding: 6px 14px;
+            background: #c0cbc0;
+            border: 1px solid #555;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 0 3px 3px 0;
+        }
+        .month-select-btn:hover { background: #0095ff; }
+
+        .clock-btn {
+            padding: 6px 20px;
+            border: 1px solid #333;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .clock-btn.clock-in  { background: #0095ff; }
+        .clock-btn.clock-in:hover  { background: #00dd00; }
+        .clock-btn.clock-out { background: #ff4444; color: white; }
+        .clock-btn.clock-out:hover { background: #cc0000; }
+
+        /* ── TABLE ── */
+        .table-wrapper {
+            background: white;
+            border: 1px solid #999;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            background: #0095ff;
+            padding: 11px 8px;
+            text-align: center;
+            font-size: 16px;
+            border: 1px solid #555;
+            font-weight: bold;
+        }
+        td {
+            padding: 9px 8px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            color: #222;
+        }
+        tr:nth-child(even) td { background: #f7f7f7; }
+
+        /* Empty rows */
+        .empty-row td { height: 38px; color: #bbb; }
+
+        /* ── FOOTER ROW ── */
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        .total-days { font-size: 15px; font-weight: bold; color: #222; }
+
+        /* Pagination */
+        .pagination { display: flex; gap: 6px; align-items: center; }
+        .page-btn {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: 1px solid #333;
+            background: #555;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .page-btn:hover { background: #333; }
+        .page-btn.disabled { background: #aaa; pointer-events: none; }
+
+        /* Hours summary */
+        .hours-summary { text-align: right; font-size: 14px; color: #222; line-height: 1.8; }
+        .hours-summary .label  { display: inline-block; min-width: 140px; }
+        .hours-summary .value  { font-weight: bold; }
+        .hours-summary .highlight { font-size: 15px; font-weight: bold; }
+
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: 999;
+        }
+        .modal-overlay.active { display: block; }
+
+        .modal-container {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #fefefe;
+            padding: 40px 50px;
+            border: 3px solid #0095ff;
+            border-radius: 12px;
+            min-width: 400px;
+            position: relative;
+            text-align: center;
+        }
+        .modal-close {
+            position: absolute;
+            top: 13px; left: 15px;
+            font-size: 30px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+        .modal-close:hover { color: #000; }
+        .warning-icon { font-size: 48px; margin-bottom: 12px; }
+        .modal-message {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .modal-buttons { display: flex; gap: 20px; justify-content: center; }
+        .yes-btn {
+            padding: 10px 35px;
+            background: #00ff00;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        .yes-btn:hover { background: #00dd00; }
+        .no-btn {
+            padding: 10px 35px;
+            background: #ff0000;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            color: white;
+        }
+        .no-btn:hover { background: #dd0000; }

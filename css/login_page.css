@@ -24,7 +24,7 @@ body {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     max-width: 800px;
     width: 90%;
-    gap: 50px;
+    column-gap: 50px;
     align-items: center;
 }
 

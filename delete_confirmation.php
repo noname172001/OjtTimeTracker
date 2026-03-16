@@ -1,32 +1,44 @@
 <?php
+//delete_confirmation.php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-// Check if admin is logged in
-// if (!isset($_SESSION['admin_logged_in'])) {
-//     header('Location: login_page.php');
-//     exit;
-// }
+require_once 'db_config.php';
 
 $admin_name = isset($_SESSION['admin_name']) ? $_SESSION['admin_name'] : 'Admin';
 
 // Get user info from URL
-$user_id = isset($_GET['id']) ? $_GET['id'] : '';
-$user_name = isset($_GET['name']) ? $_GET['name'] : '';
+$user_id   = isset($_GET['id'])   ? intval($_GET['id'])              : 0;
+$user_name = isset($_GET['name']) ? htmlspecialchars($_GET['name'])  : '';
+
+$error_message = '';
 
 // Handle delete confirmation
 if (isset($_POST['confirm_delete'])) {
-    $delete_id = $_POST['user_id'];
-    
-    // Add your database delete logic here
-    // Example:
-    // DELETE FROM interns WHERE id = ?
-    
-    // After successful delete, redirect back to dashboard
-    header('Location: admin_dashboard.php');
-    exit;
+    $delete_id = intval($_POST['user_id']);
+
+    if ($delete_id <= 0) {
+        $error_message = 'Invalid user ID.';
+    } else {
+        $conn = getDBConnection();
+
+        // Also delete related user_logs to avoid orphaned records
+        $stmt_logs = $conn->prepare("DELETE FROM user_logs WHERE user_id = :user_id");
+        $stmt_logs->execute([':user_id' => $delete_id]);
+
+        $stmt = $conn->prepare("DELETE FROM users WHERE user_id = :user_id");
+
+        if ($stmt->execute([':user_id' => $delete_id])) {
+            closeDBConnection($conn);
+            header('Location: admin_dashboard.php');
+            exit;
+        } else {
+            $error_message = 'Failed to delete user. Please try again.';
+            closeDBConnection($conn);
+        }
+    }
 }
 
 // Handle cancel
@@ -180,9 +192,27 @@ if (isset($_POST['cancel_delete'])) {
         
         .delete-message {
             font-size: 18px;
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             color: #333;
             line-height: 1.5;
+        }
+
+        .delete-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #cc0000;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: #ffe0e0;
+            border: 1px solid #ff4444;
+            color: #cc0000;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: bold;
         }
         
         .modal-buttons {
@@ -222,7 +252,6 @@ if (isset($_POST['cancel_delete'])) {
     </style>
 </head>
 <body>
-    <!-- Blurred background content -->
     <div class="header">
         <div class="logo">
             <img src="/image/logo.png" alt="Omega Healthcare">
@@ -260,11 +289,21 @@ if (isset($_POST['cancel_delete'])) {
         <div class="modal-content">
             <a href="admin_dashboard.php" class="back-arrow">←</a>
             <div class="warning-icon">⚠️</div>
+
+            <?php if (!empty($error_message)): ?>
+                <div class="alert-error"><?php echo $error_message; ?></div>
+            <?php endif; ?>
+
             <div class="delete-message">
                 Are you sure you want<br>to delete this user?
             </div>
+
+            <?php if (!empty($user_name)): ?>
+                <div class="delete-name"><?php echo $user_name; ?></div>
+            <?php endif; ?>
+
             <form method="POST">
-                <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+                <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
                 <div class="modal-buttons">
                     <button type="submit" name="confirm_delete" class="yes-btn">YES</button>
                     <button type="submit" name="cancel_delete" class="no-btn">NO</button>
@@ -274,20 +313,17 @@ if (isset($_POST['cancel_delete'])) {
     </div>
     
     <script>
-        // Update date and time
         function updateDateTime() {
             const now = new Date();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
+            const month   = String(now.getMonth() + 1).padStart(2, '0');
+            const day     = String(now.getDate()).padStart(2, '0');
+            const year    = now.getFullYear();
+            const hours   = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
-            
-            const formatted = `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
-            document.getElementById('datetime').textContent = formatted;
+            document.getElementById('datetime').textContent =
+                `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
         }
-        
         updateDateTime();
         setInterval(updateDateTime, 1000);
     </script>

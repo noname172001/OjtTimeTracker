@@ -1,0 +1,195 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: rgba(200, 200, 200, 0.7);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo img {
+            width: 180px;
+            opacity: 0.5;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0.5;
+        }
+        
+        .user-text {
+            text-align: right;
+        }
+        
+        .user-text p {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .logout-btn {
+            padding: 6px 18px;
+            background: #0095ff;
+            border: 1px solid #000;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+        
+        .profile-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #333;
+        }
+        
+        .profile-icon img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .controls {
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+        
+        .date-time {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        th {
+            background: #0095ff;
+            padding: 12px;
+            text-align: center;
+            font-size: 18px;
+            border: 1px solid #333;
+            font-weight: bold;
+        }
+        
+        .modal-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            padding: 40px;
+            border: 3px solid #0095ff;
+            border-radius: 12px;
+            min-width: 400px;
+            position: relative;
+            text-align: center;
+        }
+        
+        .back-arrow {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 32px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .back-arrow:hover {
+            color: #000;
+        }
+        
+        .warning-icon {
+            font-size: 48px;
+            color: #ff9900;
+            margin-bottom: 15px;
+        }
+        
+        .delete-message {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .delete-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #cc0000;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: #ffe0e0;
+            border: 1px solid #ff4444;
+            color: #cc0000;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .yes-btn {
+            padding: 10px 35px;
+            background: #00ff00;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        
+        .yes-btn:hover {
+            background: #00dd00;
+        }
+        
+        .no-btn {
+            padding: 10px 35px;
+            background: #ff0000;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            color: white;
+        }
+        
+        .no-btn:hover {
+            background: #dd0000;
+        }

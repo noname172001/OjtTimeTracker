@@ -1,0 +1,176 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #aaa;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo img {
+            width: 180px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-text {
+            text-align: right;
+        }
+        
+        .user-text p {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .logout-btn {
+            padding: 6px 18px;
+            background: #0095ff;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+        
+        .logout-btn:hover {
+            background: #00dd00;
+        }
+        
+        .profile-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #333;
+        }
+        
+        .profile-icon img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .date-time {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .search-add {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-box label {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .search-box input {
+            padding: 6px 10px;
+            border: 1px solid #333;
+            font-size: 14px;
+            width: 200px;
+        }
+        
+        .search-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+        }
+        
+        .add-user-btn {
+            padding: 8px 20px;
+            background: #0095ff;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 3px;
+            text-decoration: none;
+            color: #000;
+            display: inline-block;
+        }
+        
+        .add-user-btn:hover {
+            background: #00dd00;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-bottom: 15px;
+        }
+        
+        th {
+            background: #0095ff;
+            padding: 12px;
+            text-align: center;
+            font-size: 18px;
+            border: 1px solid #333;
+            font-weight: bold;
+        }
+        
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #333;
+            font-size: 16px;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .delete-icon {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .total-count {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }

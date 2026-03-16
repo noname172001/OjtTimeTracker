@@ -9,7 +9,6 @@ require_once 'db_config.php';
 
 $error = '';
 
-// Handle login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email']);
     $password = trim($_POST['password']);
@@ -66,104 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/Login_page.css">
     <title>Log In - OMH IT Timetracker</title>
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #aaa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        .container {
-            display: flex;
-            align-items: center;
-            gap: 120px;
-            max-width: 1200px;
-        }
-        .left-section {
-            text-align: center;
-        }
-        .logo {
-            margin-bottom: 60px;
-        }
-        .logo img {
-            width: 380px;
-        }
-        .app-title {
-            font-size: 38px;
-            color: #333;
-            font-weight: normal;
-            line-height: 1.3;
-        }
-        .login-box {
-            background: #f5f5f5;
-            border: 2px solid #333;
-            border-radius: 12px;
-            padding: 50px 60px 60px 60px;
-            width: 400px;
-            box-sizing: border-box;
-        }
-        .login-box h2 {
-            margin: 0 0 70px 0;
-            text-align: center;
-            font-size: 36px;
-            font-weight: normal;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .form-row {
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .login-box label {
-            font-size: 18px;
-            color: #333;
-            min-width: 90px;
-            text-align: left;
-        }
-        .login-box input[type="text"],
-        .login-box input[type="password"] {
-            width: 190px;
-            padding: 8px 10px;
-            box-sizing: border-box;
-            border: 1px solid #333;
-            font-size: 14px;
-            background: #ffffff;
-        }
-        .login-box input[type="text"]:focus,
-        .login-box input[type="password"]:focus {
-            outline: none;
-            border-color: #3b9dd8;
-            border-width: 2px;
-        }
-        .form-actions {
-            text-align: right;
-            margin-top: 50px;
-        }
-        .login-box input[type="submit"] {
-            padding: 12px 50px;
-            background: #00ff00;
-            border: 1px solid #000;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 4px;
-        }
-        .login-box input[type="submit"]:hover {
-            background: #00dd00;
-        }
-        .error {
-            color: red;
-            margin-bottom: 15px;
-            font-size: 14px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>

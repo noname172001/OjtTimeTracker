@@ -1,3 +1,8 @@
 <?php
+session_start();
 
-echo "this will be the landing page / login page";
+$_SESSION['logged_user'] = "";
+
+if (isset($_SESSION['logged_user'])) {
+    include 'views/login_page.php';
+}

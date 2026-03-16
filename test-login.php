@@ -36,7 +36,7 @@
 
         /* Brand Section */
         .brand-section {
-            flex: 1;
+            width: 300px;
             text-align: center;
             border-right: 1px solid #eee;
             padding-right: 50px;
@@ -53,6 +53,10 @@
             font-size: 0.9rem;
             letter-spacing: 1px;
             text-transform: uppercase;
+        }
+
+        .login-logo {
+            width: 100%;
         }
 
         /* Form Section */
@@ -114,6 +118,11 @@
             transform: scale(0.98);
         }
 
+        .logo-text {
+            font-size: 24px;
+            color: #666;
+        }
+
         /* Responsive Fix */
         @media (max-width: 600px) {
             .container {
@@ -127,6 +136,12 @@
                 border-bottom: 1px solid #eee;
                 padding-bottom: 20px;
             }
+
+            .left-logo img{
+                position: relative;
+                box-sizing: border-box;
+                width: 100px;
+            }
         }
     </style>
 </head>
@@ -134,20 +149,19 @@
 
 <div class="container">
     <div class="brand-section">
-        <h1>Omega</h1>
-        <p style="color: #d11; font-weight: bold; margin-top: -10px;">Healthcare</p>
-        <div style="margin-top: 20px;">
-            <strong>OMH Cebu IT</strong><br>
-            <span style="color: #888;">Timetracker | OJT</span>
+        <img class="login-logo" src="image/omegalogo.png" alt="">
+        <div style="margin-top: 30px;">
+            <strong><span class="logo-text">OJT Timetracker</span></strong><br>
+            
         </div>
     </div>
 
     <div class="login-box">
         <h2>Log In</h2>
-        <form>
+        <form action="#" method="post">
             <div class="input-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="name@company.com" required>
+                <input type="email" id="email" placeholder="name@email.com" required>
             </div>
             <div class="input-group">
                 <label for="password">Password</label>

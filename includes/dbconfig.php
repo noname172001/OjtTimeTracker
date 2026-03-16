@@ -1,17 +1,12 @@
 <?php
 
-return [
-    'db' => [
-        'host' => 'localhost',
-        'name' => 'timetrackerdb',
-        'user' => 'root',
-        'password' => '',
-        'charset' => 'utf8mb4',
-    ],
-    'pdo_options' => [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
+// Database Credentials
+define('DB_HOST', 'db');
+define('DB_NAME', 'timetrackerdb');
+define('DB_USER', 'root');
+define('DB_PASS', 'test123');
+define('DB_CHARSET', 'utf8mb4');
 
-    ],
-];
+// Application Settings
+define('APP_NAME', 'OJT Timetracker');
+define('APP_TIMEZONE', 'Asia/Manila');

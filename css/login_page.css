@@ -1,160 +1,96 @@
-:root {
-    --accent: #42bff5;
-    --bg-color: #f4f7f6;
-    --text-main: #333;
-    --text-muted: #666;
-}
-
-body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    max-width: 800px;
-    width: 90%;
-    column-gap: 50px;
-    align-items: center;
-}
-
-/* Brand Section */
-.brand-section {
-    width: 300px;
-    text-align: center;
-    border-right: 1px solid #eee;
-    padding-right: 50px;
-}
-
-.brand-section h1 {
-    color: #1a4a7a;
-    /* Mimicking the logo's dark blue */
-    margin-bottom: 5px;
-    font-size: 2rem;
-}
-
-.brand-section p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.login-logo {
-    width: 50%;
-}
-
-.header-shadow {
-    text-shadow: 1px 1px 2px #ccc;
-}
-
-/* Form Section */
-.login-box {
-    flex: 1;
-}
-
-h2 {
-    margin-top: 0;
-    font-weight: 500;
-    color: var(--text-main);
-    margin-bottom: 25px;
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-
-input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-}
-
-input:focus {
-    outline: none;
-    border-color: var(--accent);
-}
-
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.1s ease;
-}
-
-button:hover {
-    background-color: #35a8db;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-.logo-text {
-    font-size: 24px;
-    color: #666;
-}
-
-/* Responsive Fix */
-@media (max-width: 600px) {
-    .container {
-        flex-direction: column;
-        padding: 30px;
-        gap: 20px;
-    }
-
-    .brand-section {
-        border-right: none;
-        padding-right: 0;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 20px;
-    }
-
-    .left-logo img {
-        position: relative;
-        box-sizing: border-box;
-        width: 100px;
-    }
-}
-
-
-/* Footer Area */
-.footer-container {
-    flex-basis: 100%;
-}
-.footer {
-    position: relative; 
-    bottom: -75px;
-    left: -30px;
-    font-size: 13px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-}
+       body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            gap: 120px;
+            max-width: 1200px;
+        }
+        .left-section {
+            text-align: center;
+        }
+        .logo {
+            margin-bottom: 60px;
+        }
+        .logo img {
+            width: 380px;
+        }
+        .app-title {
+            font-size: 38px;
+            color: #333;
+            font-weight: normal;
+            line-height: 1.3;
+        }
+        .login-box {
+            background: #f5f5f5;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 50px 60px 60px 60px;
+            width: 400px;
+            box-sizing: border-box;
+        }
+        .login-box h2 {
+            margin: 0 0 70px 0;
+            text-align: center;
+            font-size: 36px;
+            font-weight: normal;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .login-box label {
+            font-size: 18px;
+            color: #333;
+            min-width: 90px;
+            text-align: left;
+        }
+        .login-box input[type="text"],
+        .login-box input[type="password"] {
+            width: 190px;
+            padding: 8px 10px;
+            box-sizing: border-box;
+            border: 1px solid #333;
+            font-size: 14px;
+            background: #ffffff;
+        }
+        .login-box input[type="text"]:focus,
+        .login-box input[type="password"]:focus {
+            outline: none;
+            border-color: #3b9dd8;
+            border-width: 2px;
+        }
+        .form-actions {
+            text-align: right;
+            margin-top: 50px;
+        }
+        .login-box input[type="submit"] {
+            padding: 12px 50px;
+            background: #00ff00;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .login-box input[type="submit"]:hover {
+            background: #00dd00;
+        }
+        .error {
+            color: red;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: center;
+        }

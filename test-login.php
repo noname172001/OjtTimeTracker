@@ -13,8 +13,9 @@
     <div class="brand-section">
         <img class="login-logo" src="image/omegalogo.png" alt="">
         <div style="margin-top: 30px;">
-            <strong><span class="logo-text">OJT Timetracker</span></strong><br>
-            
+            <!-- <strong><span class="logo-text">OMH ITPH TIMETRACKER</span></strong><br> -->
+            <h1 class="header-shadow">TIMETRACKER v2</h1>
+            <p>OJT TIMETRACKER MANAGEMENT</p>
         </div>
     </div>
 

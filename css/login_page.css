@@ -51,7 +51,11 @@ body {
 }
 
 .login-logo {
-    width: 100%;
+    width: 50%;
+}
+
+.header-shadow {
+    text-shadow: 1px 1px 2px #ccc;
 }
 
 /* Form Section */
@@ -151,7 +155,6 @@ button:active {
     left: -30px;
     font-size: 13px;
     text-transform: uppercase;
-    color: #888;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
 }

@@ -11,3 +11,5 @@ This PHP-based project is designed with a simple, minimalist architecture. It se
 ├── 📂 `includes/`   # Core PHP logic and backend processing  
 └── 📂 `views/`      # Front-end templates and page layouts  
 └── 📂 `images/`     # Images used in design
+
+Add more readme soon

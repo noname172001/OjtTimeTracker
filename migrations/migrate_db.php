@@ -56,12 +56,13 @@ $tables = [
             last_name VARCHAR(50) NOT NULL,
             school VARCHAR(100),
             total_required_hours INT DEFAULT 0,
-            site_location VARCHAR(50),
+            site_location INT,
             user_address TEXT,
             mobile_no VARCHAR(30),
             status ENUM('active','inactive','suspended','deleted') DEFAULT 'active',
             date_status_updated DATETIME DEFAULT NULL,
-            date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "users_login" => "CREATE TABLE IF NOT EXISTS users_login (
@@ -84,13 +85,18 @@ $tables = [
             log_time_in TIME NOT NULL,
             log_time_out TIME DEFAULT NULL,
             total_log_hours DECIMAL(5,2) DEFAULT 0.00,
-            create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             CONSTRAINT fk_timesheet_user
                 FOREIGN KEY (users_id)
                 REFERENCES users(users_id)
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
+            )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+    "sites" => "CREATE TABLE IF NOT EXISTS site_location (
+            site_location_id INT AUTO_INCREMENT PRIMARY KEY,
+            site_name VARCHAR(50) NOT NULL
             )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
 ];
 
